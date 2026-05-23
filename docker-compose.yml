@@ -1,0 +1,31 @@
+name: neurohub
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      FLASK_ENV: development
+      SERVICE_NAME: neurohub
+      SECRET_KEY: change_me
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/neurohub_api
+      CORS_ORIGINS: http://localhost:5173,http://localhost:3000,https://mechastationlab.com,https://caramelo.mechastationlab.com
+      API_KEY_HEADER: X-API-Key
+      API_KEY: change_me_api_key
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: neurohub_api
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - neurohub_postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  neurohub_postgres_data:
